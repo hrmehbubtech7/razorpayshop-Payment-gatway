@@ -43,47 +43,25 @@ app.post("/recharge", async (req, res) => {
     currency: "INR",
     receipt: "order_" + comp.recharge,
   };
-  if (req.body.whereTo == 1) {
-    var instance = new Razorpay({
-      key_id: process.env.RAZ_KEY,
-      key_secret: process.env.RAZ_SECRET,
-    });
-    instance.orders.create(options, async function (err, order) {
-      console.log(order);
-      comp.order = order.id;
-      await new Recharging(comp).save();
-      if (!err) {
-        return res.status(200).json({
-          order,
-          key: process.env.RAZ_KEY,
-          email: req.body.email,
-          url: process.env.APP_URL + "/response",
-        });
-      } else {
-        return res.status(400).json({ message: "error" });
-      }
-    });
-  } else {
-    var instance = new Razorpay({
-      key_id: "rzp_live_2mjh0soPMQ1yTj",
-      key_secret: "vYrKY5t5oEB9axNi1up0HcMG",
-    });
-    instance.orders.create(options, async function (err, order) {
-      console.log(order);
-      comp.order = order.id;
-      await new Recharging(comp).save();
-      if (!err) {
-        return res.status(200).json({
-          order,
-          key: "rzp_live_lxuTGZSbAdRKXc",
-          email: req.body.email,
-          url: process.env.APP_URL + "/response",
-        });
-      } else {
-        return res.status(400).json({ message: "error" });
-      }
-    });
-  }
+  var instance = new Razorpay({
+    key_id: process.env.RAZ_KEY,
+    key_secret: process.env.RAZ_SECRET,
+  });
+  instance.orders.create(options, async function (err, order) {
+    console.log(order);
+    comp.order = order.id;
+    await new Recharging(comp).save();
+    if (!err) {
+      return res.status(200).json({
+        order,
+        key: process.env.RAZ_KEY,
+        email: req.body.email,
+        url: process.env.APP_URL + "/response",
+      });
+    } else {
+      return res.status(400).json({ message: "error" });
+    }
+  });
 });
 
 app.post("/response/0", async function (req, res) {
@@ -167,11 +145,7 @@ app.post("/response/1", async function (req, res) {
       );
       // console.log('redirecting');
       return res.redirect(
-        process.env.LOTTERY_1 +
-          "/api/response-recharge/" +
-          token +
-          "/" +
-          req.params.whereTo
+        process.env.LOTTERY_1 + "/api/response-recharge/" + token
       );
     }
     return res.redirect("/success");
@@ -217,11 +191,7 @@ app.post("/response/2", async function (req, res) {
       );
       // console.log('redirecting');
       return res.redirect(
-        process.env.LOTTERY_2 +
-          "/api/response-recharge/" +
-          token +
-          "/" +
-          req.params.whereTo
+        process.env.LOTTERY_2 + "/api/response-recharge/" + token
       );
     }
     return res.redirect("/success");
