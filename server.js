@@ -15,7 +15,7 @@ mongoose.set("useCreateIndex", true);
 mongoose.set("useUnifiedTopology", true);
 const db = process.env.DB_DEV;
 const app = express();
-const port = process.env.PORT || 7777;
+const port = process.env.PORT || 5001;
 mongoose
   .connect(db, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => console.log("MongoDB Connected: ", app.settings.env))
